@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
@@ -20,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFormContext, QuestionStyle, OptionStyle, SectionStyle, GlobalStyle } from "@/contexts/FormContext";
-import { AlignLeft, AlignCenter, AlignRight, Bold, Font, TextCursor } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, Bold, Type, Pencil } from 'lucide-react';
 
 // Color picker component
 const ColorPicker: React.FC<{
@@ -421,13 +420,13 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ open, onClose, isGlobal = fal
         <Tabs defaultValue="question" className="mt-4">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="question" className="flex items-center">
-              <Font size={16} className="mr-1.5" />
+              <Type size={16} className="mr-1.5" />
               Question
             </TabsTrigger>
             {isGlobal && (
               <>
                 <TabsTrigger value="option" className="flex items-center">
-                  <TextCursor size={16} className="mr-1.5" />
+                  <Pencil size={16} className="mr-1.5" />
                   Options
                 </TabsTrigger>
                 <TabsTrigger value="section" className="flex items-center">
