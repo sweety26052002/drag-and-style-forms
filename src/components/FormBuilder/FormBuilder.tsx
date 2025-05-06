@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { DragProvider } from '@/contexts/DragContext';
 import QuestionsList from './QuestionsList';
 import FormPreview from './FormPreview';
 import StyleEditor from './StyleEditor';
