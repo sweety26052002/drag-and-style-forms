@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { FormProvider } from '@/contexts/FormContext';
 import { DragProvider } from '@/contexts/DragContext';
 import QuestionsList from './QuestionsList';
 import FormPreview from './FormPreview';
@@ -9,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Settings } from 'lucide-react';
 import { useFormContext } from '@/contexts/FormContext';
 
-const FormBuilderContent = () => {
+const FormBuilder = () => {
   const [styleEditorOpen, setStyleEditorOpen] = useState(false);
   const [globalStyleEditorOpen, setGlobalStyleEditorOpen] = useState(false);
   const { questions } = useFormContext();
@@ -49,16 +48,6 @@ const FormBuilderContent = () => {
         isGlobal={true}
       />
     </div>
-  );
-};
-
-const FormBuilder: React.FC = () => {
-  return (
-    <FormProvider>
-      <DragProvider>
-        <FormBuilderContent />
-      </DragProvider>
-    </FormProvider>
   );
 };
 
