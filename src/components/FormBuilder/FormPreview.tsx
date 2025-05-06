@@ -1,16 +1,27 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useDrop } from 'react-dnd';
+import { 
+  Paper, 
+  Typography, 
+  Box, 
+  IconButton, 
+  Divider, 
+  Radio, 
+  Checkbox, 
+  MenuItem,
+  Select,
+  FormControl
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useFormContext, Question, Section } from '@/contexts/FormContext';
-import { useDragContext } from '@/contexts/DragContext';
-import { Trash2, Settings } from 'lucide-react';
 
-const FormQuestion: React.FC<{
-  question: Question;
-  index: number;
-  onStyleClick: () => void;
-}> = ({ question, index, onStyleClick }) => {
+const FormQuestion = ({ 
+  question, 
+  index, 
+  onStyleClick 
+}) => {
   const { removeQuestionFromForm, selectQuestion, globalStyle } = useFormContext();
 
   // Apply global styles unless overridden by question-specific styles
@@ -26,7 +37,7 @@ const FormQuestion: React.FC<{
     color: globalStyle.optionStyle.fontColor,
     fontSize: globalStyle.optionStyle.fontSize,
     fontWeight: globalStyle.optionStyle.fontWeight,
-    textAlign: globalStyle.optionStyle.textAlign as any,
+    textAlign: globalStyle.optionStyle.textAlign,
     ...(globalStyle.optionStyle.isBold ? { fontWeight: 'bold' } : {})
   };
 
@@ -40,67 +51,61 @@ const FormQuestion: React.FC<{
   };
 
   return (
-    <div className="bg-white p-4 rounded-md shadow-sm border border-gray-200 mb-3">
-      <div className="flex justify-between items-start mb-2">
-        <div className="flex-1" style={questionStyle as React.CSSProperties}>
-          <span className="mr-2 text-form-purple">{index + 1}.</span>
+    <Paper sx={{ p: 2, mb: 2, border: '1px solid #e0e0e0' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+        <Typography sx={questionStyle}>
+          <span style={{ marginRight: '8px', color: '#8B5CF6' }}>{index + 1}.</span>
           {question.text}
-        </div>
-        <div className="flex space-x-2">
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={handleStyleClick}
-            className="h-7 w-7"
-          >
-            <Settings size={14} />
-          </Button>
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={handleRemove} 
-            className="h-7 w-7 text-destructive hover:text-destructive"
-          >
-            <Trash2 size={14} />
-          </Button>
-        </div>
-      </div>
+        </Typography>
+        <Box>
+          <IconButton size="small" onClick={handleStyleClick}>
+            <SettingsIcon fontSize="small" />
+          </IconButton>
+          <IconButton size="small" onClick={handleRemove} color="error">
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
 
       {question.options.length > 0 && (
-        <div className="mt-2 pl-6 space-y-1">
+        <Box sx={{ pl: 3, mt: 1 }}>
           {question.type === 'multiChoice' && question.options.map((option) => (
-            <div key={option.id} className="flex items-center" style={optionStyle as React.CSSProperties}>
-              <input type="radio" className="mr-2" disabled />
+            <Box key={option.id} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }} style={optionStyle}>
+              <Radio disabled size="small" sx={{ mr: 0.5 }} />
               {option.text}
-            </div>
+            </Box>
           ))}
           
           {question.type === 'checkbox' && question.options.map((option) => (
-            <div key={option.id} className="flex items-center" style={optionStyle as React.CSSProperties}>
-              <input type="checkbox" className="mr-2" disabled />
+            <Box key={option.id} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }} style={optionStyle}>
+              <Checkbox disabled size="small" sx={{ mr: 0.5 }} />
               {option.text}
-            </div>
+            </Box>
           ))}
           
           {question.type === 'dropdown' && (
-            <select className="w-full p-2 border border-gray-300 rounded-md bg-white" disabled>
-              <option>Select an option</option>
-              {question.options.map((option) => (
-                <option key={option.id}>{option.text}</option>
-              ))}
-            </select>
+            <FormControl fullWidth size="small">
+              <Select disabled value="" displayEmpty>
+                <MenuItem value="" disabled>Select an option</MenuItem>
+                {question.options.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.text}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           )}
-        </div>
+        </Box>
       )}
-    </div>
+    </Paper>
   );
 };
 
-const SectionContainer: React.FC<{
-  section: Section;
-  questions: Question[];
-  onStyleClick: () => void;
-}> = ({ section, questions, onStyleClick }) => {
+const SectionContainer = ({
+  section,
+  questions,
+  onStyleClick
+}) => {
   const { globalStyle } = useFormContext();
 
   const sectionStyle = {
@@ -114,84 +119,94 @@ const SectionContainer: React.FC<{
   };
 
   return (
-    <div 
-      className="mb-4 border rounded-md overflow-hidden shadow-sm"
-      style={sectionStyle as React.CSSProperties}
+    <Paper 
+      variant="outlined" 
+      sx={{ 
+        mb: 2,
+        overflow: 'hidden', 
+        ...sectionStyle
+      }}
     >
-      <div className="p-2 bg-muted/50 border-b">
-        <div className="flex justify-between items-center">
-          <h3 className="text-sm font-medium">{section.title}</h3>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+      <Box sx={{ p: 1, bgcolor: '#f5f5f5', borderBottom: '1px solid #e0e0e0' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="subtitle2">{section.title}</Typography>
+          <IconButton 
+            size="small"
             onClick={onStyleClick}
-            className="h-6 text-xs"
           >
-            <Settings size={12} className="mr-1" />
-            Section Style
-          </Button>
-        </div>
-      </div>
-      <div className={`p-3 ${section.style?.flexDirection === 'row' ? 'flex gap-2' : 'space-y-3'}`}>
+            <SettingsIcon fontSize="small" />
+            <Typography variant="caption" sx={{ ml: 0.5 }}>Section Style</Typography>
+          </IconButton>
+        </Box>
+      </Box>
+      <Box sx={{ 
+        p: 2, 
+        display: 'flex', 
+        flexDirection: section.style?.flexDirection, 
+        gap: 2 
+      }}>
         {questions.map((question, index) => (
-          <div key={question.id} className={section.style?.flexDirection === 'row' ? 'flex-1' : ''}>
+          <Box 
+            key={question.id} 
+            sx={{ flex: section.style?.flexDirection === 'row' ? 1 : 'unset' }}
+          >
             <FormQuestion 
               question={question} 
               index={questions.findIndex(q => q.id === question.id)} 
               onStyleClick={onStyleClick} 
             />
-          </div>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Paper>
   );
 };
 
-interface FormPreviewProps {
-  onStyleClick: () => void;
-}
-
-const FormPreview: React.FC<FormPreviewProps> = ({ onStyleClick }) => {
+const FormPreview = ({ onStyleClick }) => {
   const { formQuestions, sections, addQuestionToForm } = useFormContext();
-  const { endDrag } = useDragContext();
   
   // Get questions that are not in any section
   const nonSectionQuestions = formQuestions.filter(
     question => !sections.some(section => section.questionIds.includes(question.id))
   );
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    try {
-      const questionData = e.dataTransfer.getData('application/json');
-      if (questionData) {
-        const question = JSON.parse(questionData);
-        addQuestionToForm(question);
-      }
-    } catch (error) {
-      console.error('Error parsing dropped data:', error);
-    }
-    endDrag();
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'QUESTION',
+    drop: (item: Question) => {
+      addQuestionToForm(item);
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-medium">Form Preview</CardTitle>
-      </CardHeader>
-      <CardContent 
-        className="space-y-4 min-h-[400px] overflow-y-auto max-h-[calc(100vh-200px)]"
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
+    <Box>
+      <Typography variant="h6" sx={{ mb: 2 }}>Form Preview</Typography>
+      <Box 
+        ref={drop} 
+        sx={{ 
+          minHeight: '400px', 
+          maxHeight: 'calc(100vh - 200px)', 
+          overflow: 'auto',
+          p: 2,
+          border: isOver ? '2px dashed #8B5CF6' : '2px dashed #e0e0e0',
+          bgcolor: isOver ? 'rgba(139, 92, 246, 0.05)' : 'transparent',
+          borderRadius: 1,
+          transition: 'all 0.3s'
+        }}
       >
         {formQuestions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-32 border-2 border-dashed rounded-md bg-muted/30 text-muted-foreground">
-            <p>Drag questions here to build your form</p>
-          </div>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            height: '150px',
+            color: 'text.secondary'
+          }}>
+            <Typography>Drag questions here to build your form</Typography>
+          </Box>
         ) : (
           <>
             {sections.map((section) => {
@@ -218,8 +233,8 @@ const FormPreview: React.FC<FormPreviewProps> = ({ onStyleClick }) => {
             ))}
           </>
         )}
-      </CardContent>
-    </Card>
+      </Box>
+    </Box>
   );
 };
 

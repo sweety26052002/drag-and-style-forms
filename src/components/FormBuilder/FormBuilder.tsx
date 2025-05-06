@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
+import { Box, Grid, Typography, Button, Paper } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
 import QuestionsList from './QuestionsList';
 import FormPreview from './FormPreview';
 import StyleEditor from './StyleEditor';
-import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
 import { useFormContext } from '@/contexts/FormContext';
 
 const FormBuilder = () => {
@@ -13,27 +13,30 @@ const FormBuilder = () => {
   const { questions } = useFormContext();
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Form Builder</h1>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" component="h2">Form Builder</Typography>
         <Button 
-          variant="outline"
-          className="flex items-center"
+          variant="outlined"
+          startIcon={<SettingsIcon />}
           onClick={() => setGlobalStyleEditorOpen(true)}
         >
-          <Settings size={16} className="mr-2" />
           Global Styles
         </Button>
-      </div>
+      </Box>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-150px)]">
-        <div className="h-full">
-          <FormPreview onStyleClick={() => setStyleEditorOpen(true)} />
-        </div>
-        <div className="h-full">
-          <QuestionsList title="Available Questions" questions={questions} />
-        </div>
-      </div>
+      <Grid container spacing={2} sx={{ height: 'calc(100vh - 150px)' }}>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ height: '100%', p: 2 }}>
+            <FormPreview onStyleClick={() => setStyleEditorOpen(true)} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ height: '100%', p: 2 }}>
+            <QuestionsList title="Available Questions" questions={questions} />
+          </Paper>
+        </Grid>
+      </Grid>
 
       <StyleEditor 
         open={styleEditorOpen}
@@ -46,7 +49,7 @@ const FormBuilder = () => {
         onClose={() => setGlobalStyleEditorOpen(false)}
         isGlobal={true}
       />
-    </div>
+    </Box>
   );
 };
 

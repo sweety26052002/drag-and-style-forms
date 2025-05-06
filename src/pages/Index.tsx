@@ -1,39 +1,64 @@
 
 import React, { useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Box, Typography, Tabs, Tab } from '@mui/material';
 import FormBuilder from '@/components/FormBuilder/FormBuilder';
 import FormDisplay from '@/components/FormBuilder/FormDisplay';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormProvider } from '@/contexts/FormContext';
-import { DragProvider } from '@/contexts/DragContext';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState('builder');
-  
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Form Creator</h1>
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+      <Typography variant="h3" component="h1" align="center" sx={{ mb: 4 }}>
+        Form Creator
+      </Typography>
       
       <FormProvider>
-        <DragProvider>
-          <Tabs defaultValue="builder" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="flex justify-center mb-4">
-              <TabsList>
-                <TabsTrigger value="builder">Form Builder</TabsTrigger>
-                <TabsTrigger value="preview">Form Preview</TabsTrigger>
-              </TabsList>
-            </div>
-            
-            <TabsContent value="builder">
+        <DndProvider backend={HTML5Backend}>
+          <Box sx={{ width: '100%' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center' }}>
+              <Tabs value={activeTab} onChange={handleChange} aria-label="form builder tabs">
+                <Tab label="Form Builder" />
+                <Tab label="Form Preview" />
+              </Tabs>
+            </Box>
+            <TabPanel value={activeTab} index={0}>
               <FormBuilder />
-            </TabsContent>
-            
-            <TabsContent value="preview">
+            </TabPanel>
+            <TabPanel value={activeTab} index={1}>
               <FormDisplay />
-            </TabsContent>
-          </Tabs>
-        </DragProvider>
+            </TabPanel>
+          </Box>
+        </DndProvider>
       </FormProvider>
-    </div>
+    </Box>
   );
 };
 

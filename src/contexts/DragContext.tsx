@@ -1,4 +1,7 @@
 
+// This file is no longer needed as we're using React DnD directly in components
+// The code is kept as a reference but is not used
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Question } from './FormContext';
 
